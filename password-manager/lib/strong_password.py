@@ -16,7 +16,7 @@ def check_password_strength(password):
     else:
         if comments != "":
             comments = comments.replace(".", ", ", 1)
-            comments += "иметь хотя бы одну строчную букву."
+            comments += "<p>иметь хотя бы одну строчную букву.</p>"
         else:
             comments += "Пароль должен иметь хотя бы одну строчную букву."
 
@@ -25,7 +25,7 @@ def check_password_strength(password):
     else:
         if comments != "":
             comments = comments.replace(".", ", ", 1)
-            comments += "иметь хотя бы одну заглавную букву."
+            comments += "<p>иметь хотя бы одну заглавную букву.</p>"
         else:
             comments += "Пароль должен иметь хотя бы одну заглавную букву."
     if re.search(r'[0-9]', password):
@@ -33,7 +33,7 @@ def check_password_strength(password):
     else:
         if comments != "":
             comments = comments.replace(".", ", ", 1)
-            comments += "иметь хотя бы одну цифру."
+            comments += "<p>иметь хотя бы одну цифру.</p>"
         else:
             comments += "Пароль должен иметь хотя бы одну цифру."
     if re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
@@ -41,17 +41,17 @@ def check_password_strength(password):
     else:
         if comments != "":
             comments = comments.replace(".", ", ", 1)
-            comments += "иметь хотя бы один специальный символ."
+            comments += "<p>иметь хотя бы один специальный символ.</p>"
         else:
             comments += "Пароль должен иметь хотя бы один специальный символ."
     if conditions_met == 0:
-        return "Ненадёжный", comments
+        return '<h3 style="color: red;">Ненадёжный</h3>', comments
     elif conditions_met == 1 or conditions_met == 2:
-        return "Слабый", comments
+        return '<h3 style="color: orange;">Слабый</h3>', comments
     elif conditions_met == 3 or conditions_met == 4:
-        return "Средний", comments
+        return '<h3 style="color: yellow;">Средний</h3>', comments
     else:
-        return "Надёжный", ''
+        return '<h3 style="color: lime;">Надёжный</h3>', ''
 
 
 def generate_password(length=12):

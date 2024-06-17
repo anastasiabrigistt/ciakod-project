@@ -23,7 +23,9 @@ class Ui_PasswordDialog(object):
     def setupUi(self, PasswordDialog):
         if not PasswordDialog.objectName():
             PasswordDialog.setObjectName(u"PasswordDialog")
-        PasswordDialog.resize(423, 318)
+        PasswordDialog.resize(508, 348)
+        PasswordDialog.setMinimumSize(QSize(0, 0))
+        PasswordDialog.setMaximumSize(QSize(16777215, 16777215))
         font = QFont()
         font.setFamilies([u"Microsoft YaHei UI Light"])
         font.setPointSize(12)
@@ -36,8 +38,7 @@ class Ui_PasswordDialog(object):
 
         self.frame = QFrame(PasswordDialog)
         self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
+        self.frame.setFrameShape(QFrame.Shape.NoFrame)
         self.verticalLayout_2 = QVBoxLayout(self.frame)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.formLayout = QFormLayout()
@@ -77,7 +78,7 @@ class Ui_PasswordDialog(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
 
@@ -95,8 +96,8 @@ class Ui_PasswordDialog(object):
 
         self.label_4 = QLabel(self.frame)
         self.label_4.setObjectName(u"label_4")
+        self.label_4.setTextFormat(Qt.TextFormat.AutoText)
         self.label_4.setScaledContents(False)
-        self.label_4.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_2.addWidget(self.label_4)
 
@@ -109,7 +110,7 @@ class Ui_PasswordDialog(object):
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
@@ -119,7 +120,7 @@ class Ui_PasswordDialog(object):
 
         self.horizontalLayout.addWidget(self.saveButton)
 
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_3)
 
@@ -141,7 +142,7 @@ class Ui_PasswordDialog(object):
         self.genButton.setToolTip(QCoreApplication.translate("PasswordDialog", u"\u0421\u0433\u0435\u043d\u0435\u0440\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u043d\u0430\u0434\u0451\u0436\u043d\u044b\u0439 \u043f\u0430\u0440\u043e\u043b\u044c", None))
 #endif // QT_CONFIG(tooltip)
         self.genButton.setText(QCoreApplication.translate("PasswordDialog", u"\u0421\u0433\u0435\u043d\u0435\u0440\u0438\u0440\u043e\u0432\u0430\u0442\u044c", None))
-        self.label_4.setText("")
+        self.label_4.setText(QCoreApplication.translate("PasswordDialog", u"password", None))
         self.saveButton.setText(QCoreApplication.translate("PasswordDialog", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
     # retranslateUi
 

@@ -15,16 +15,17 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QListWidget,
-    QListWidgetItem, QMainWindow, QMenuBar, QPushButton,
-    QSizePolicy, QSpacerItem, QStatusBar, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QMainWindow,
+    QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(800, 600)
+        MainWindow.setMinimumSize(QSize(800, 600))
+        MainWindow.setMaximumSize(QSize(800, 600))
         font = QFont()
         font.setFamilies([u"Microsoft YaHei UI Light"])
         font.setPointSize(16)
@@ -35,7 +36,11 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")
-        self.label.setAlignment(Qt.AlignCenter)
+        font1 = QFont()
+        font1.setFamilies([u"Microsoft YaHei UI Light"])
+        font1.setPointSize(22)
+        self.label.setFont(font1)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.verticalLayout.addWidget(self.label)
 
@@ -43,6 +48,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.webButton = QPushButton(self.centralwidget)
         self.webButton.setObjectName(u"webButton")
+        self.webButton.setMinimumSize(QSize(0, 50))
+        self.webButton.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
         self.horizontalLayout.addWidget(self.webButton)
 
@@ -61,52 +68,57 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.listWidget = QListWidget(self.centralwidget)
-        self.listWidget.setObjectName(u"listWidget")
+        self.scrollArea = QScrollArea(self.centralwidget)
+        self.scrollArea.setObjectName(u"scrollArea")
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 778, 428))
+        self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.passBox = QVBoxLayout()
+        self.passBox.setObjectName(u"passBox")
 
-        self.horizontalLayout_2.addWidget(self.listWidget)
+        self.verticalLayout_3.addLayout(self.passBox)
 
-        self.verticalLayout_2 = QVBoxLayout()
-        self.verticalLayout_2.setSpacing(20)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(10, -1, 10, -1)
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_3 = QSpacerItem(20, 372, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_2.addItem(self.verticalSpacer_2)
+        self.verticalLayout_3.addItem(self.verticalSpacer_3)
 
-        self.addButton = QPushButton(self.centralwidget)
-        self.addButton.setObjectName(u"addButton")
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
-        self.verticalLayout_2.addWidget(self.addButton)
-
-        self.editButton = QPushButton(self.centralwidget)
-        self.editButton.setObjectName(u"editButton")
-
-        self.verticalLayout_2.addWidget(self.editButton)
-
-        self.delButton = QPushButton(self.centralwidget)
-        self.delButton.setObjectName(u"delButton")
-
-        self.verticalLayout_2.addWidget(self.delButton)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_2.addItem(self.verticalSpacer)
-
-
-        self.horizontalLayout_2.addLayout(self.verticalLayout_2)
+        self.horizontalLayout_2.addWidget(self.scrollArea)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.addButton = QPushButton(self.centralwidget)
+        self.addButton.setObjectName(u"addButton")
+        self.addButton.setMinimumSize(QSize(40, 40))
+        self.addButton.setMaximumSize(QSize(16777215, 16777215))
+        icon = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ListAdd))
+        self.addButton.setIcon(icon)
+
+        self.horizontalLayout_4.addWidget(self.addButton)
+
+        self.horizontalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_4.addItem(self.horizontalSpacer)
+
+        self.settingsButton = QPushButton(self.centralwidget)
+        self.settingsButton.setObjectName(u"settingsButton")
+        self.settingsButton.setMinimumSize(QSize(40, 40))
+        self.settingsButton.setMaximumSize(QSize(16777215, 16777215))
+        self.settingsButton.setIcon(icon)
+
+        self.horizontalLayout_4.addWidget(self.settingsButton)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
+
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
-        self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 800, 34))
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
 
@@ -116,11 +128,13 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Z Password Manager", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Z Password Manager", None))
+#if QT_CONFIG(whatsthis)
+        self.webButton.setWhatsThis("")
+#endif // QT_CONFIG(whatsthis)
         self.webButton.setText(QCoreApplication.translate("MainWindow", u"\u0421\u0430\u0439\u0442\u044b", None))
         self.appsButton.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f", None))
         self.otherButton.setText(QCoreApplication.translate("MainWindow", u"\u0414\u0440\u0443\u0433\u043e\u0435", None))
-        self.addButton.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
-        self.editButton.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c", None))
-        self.delButton.setText(QCoreApplication.translate("MainWindow", u"\u0423\u0434\u0430\u043b\u0438\u0442\u044c", None))
+        self.addButton.setText("")
+        self.settingsButton.setText("")
     # retranslateUi
 

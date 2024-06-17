@@ -1,14 +1,15 @@
-import sys
+import sys, os
 
-from PyQt5.QtWinExtras import QtWin
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui, QtCore
 
-from main_form import Ui_MainWindow
+from lib.resource import resource_path
+from ui.main_form import Ui_MainWindow
 from master import MasterDialog
 from passdial import PasswordDialog
-from classes import Service
+from element import ElementWidget
+from settings import SettingsDialog
+from lib.classes import Service
 import lib.sql as sql
-
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -16,59 +17,78 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.category = 'web'
+        self.services = []
         self.setup_controls()
         self.master_password()
         self.load_data()
 
     def setup_controls(self):
         self.addButton.clicked.connect(self.add)
-        self.editButton.clicked.connect(self.edit)
-        self.delButton.clicked.connect(self.delete)
+        self.addButton.setIcon(QtGui.QIcon(resource_path('files/add.png')))
+        self.addButton.setIconSize(QtCore.QSize(24, 24))
         self.webButton.clicked.connect(lambda _: self.filter('web'))
         self.appsButton.clicked.connect(lambda _: self.filter('apps'))
         self.otherButton.clicked.connect(lambda _: self.filter('other'))
-        self.listWidget.itemDoubleClicked.connect(self.edit)
+        self.settingsButton.clicked.connect(self.settings)
+        self.settingsButton.setIcon(QtGui.QIcon(resource_path('files/settings.png')))
+        self.settingsButton.setIconSize(QtCore.QSize(24, 24))
+
+    def settings(self):
+        dialog = SettingsDialog()
+        dialog.setWindowIcon(QtGui.QIcon(resource_path('files/icon.ico')))
+        dialog.exec()
+        self.load_data()
 
     def add(self):
         service = Service()
         service.category = self.category
         dialog = PasswordDialog(service)
+        dialog.setWindowIcon(QtGui.QIcon(resource_path('files/icon.ico')))
         dialog.exec()
         self.load_data()
 
-    def edit(self):
-        pass
-
-    def delete(self):
-        pass
-
     def filter(self, page):
+        self.webButton.setMinimumSize(0, 50 * (page == 'web'))
+        self.appsButton.setMinimumSize(0, 50 * (page == 'apps'))
+        self.otherButton.setMinimumSize(0, 50 * (page == 'other'))
         self.category = page
         self.load_data()
 
     def master_password(self):
         master = MasterDialog()
+        master.setWindowIcon(QtGui.QIcon(resource_path('files/icon.ico')))
         status = master.exec()
         while status != QtWidgets.QDialog.DialogCode.Accepted:
+            if not master.tried:
+                sys.exit()
             QtWidgets.QMessageBox.warning(
-                self, 'Warning', 'Неверный Мастер-пароль!'
+                self, 'Ошибка', 'Неверный Мастер-пароль!'
             )
+            master.tried = False
             status = master.exec()
 
     def load_data(self):
-        self.listWidget.clear()
+        while self.passBox.count():
+            item = self.passBox.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+            else:
+                self.passBox.removeItem(item)
         data = sql.get_all_data()
-        for i in data:
-            if i[1] == self.category:
-                self.listWidget.addItem(f'{i[0]}) {i[2]} / {i[3]}')
+        self.services = []
+        for el in data:
+            self.services.append(
+                Service(int(el[0]), el[1], el[2], el[3], el[4])
+            )
+        for service in self.services:
+            if service.category == self.category:
+                self.passBox.addWidget(ElementWidget(service))
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    myappid = 'z.passmanager.1'
-    QtWin.setCurrentProcessExplicitAppUserModelID(myappid)
     window = MainWindow()
-    window.setWindowIcon(QtGui.QIcon('files/icon.ico'))
+    window.setWindowIcon(QtGui.QIcon(resource_path('files/icon.ico')))
     window.show()
     sys.exit(app.exec())
-

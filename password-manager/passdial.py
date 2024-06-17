@@ -2,8 +2,8 @@ from PySide6 import QtWidgets
 
 import lib.strong_password as strong_password
 import lib.sql as sql
-from pass_form import Ui_PasswordDialog
-from classes import Service
+from ui.pass_form import Ui_PasswordDialog
+from lib.classes import Service
 
 
 class PasswordDialog(QtWidgets.QDialog, Ui_PasswordDialog):
@@ -11,10 +11,14 @@ class PasswordDialog(QtWidgets.QDialog, Ui_PasswordDialog):
         super().__init__()
         self.setupUi(self)
         self.service = service
+        self.setup_controls()
+        self.fill_info()
+        self.check()
+
+    def setup_controls(self):
         self.genButton.clicked.connect(self.generate)
         self.saveButton.clicked.connect(self.save)
         self.passEdit.textChanged.connect(self.check)
-        self.fill_info()
 
     def generate(self):
         self.passEdit.setText(strong_password.generate_password())
@@ -24,7 +28,7 @@ class PasswordDialog(QtWidgets.QDialog, Ui_PasswordDialog):
             self.passEdit.text()
         )
         self.label_4.setText(
-            f'{level}: {comments}'
+            f'{level}<p/>{comments}'
         )
 
     def fill_info(self):
