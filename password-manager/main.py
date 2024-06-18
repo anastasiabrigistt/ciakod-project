@@ -1,15 +1,15 @@
-import sys, os
+import sys
 
 from PySide6 import QtWidgets, QtGui, QtCore
 
 from lib.resource import resource_path
-from ui.main_form import Ui_MainWindow
+import lib.sql as sql
+from element import ElementWidget
+from lib.classes import Service
 from master import MasterDialog
 from passdial import PasswordDialog
-from element import ElementWidget
 from settings import SettingsDialog
-from lib.classes import Service
-import lib.sql as sql
+from ui.main_form import Ui_MainWindow
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -17,10 +17,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.category = 'web'
+        self.on_top = False
+        self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint, True)
         self.services = []
         self.setup_controls()
         self.master_password()
         self.load_data()
+        screen_geometry = QtWidgets.QApplication.primaryScreen().geometry()
+        screen_width = screen_geometry.width()
+        screen_height = screen_geometry.height()
+
+        window_width = self.width()
+        window_height = self.height()
+        x = screen_width - window_width
+        y = screen_height - window_height - 45
+        self.move(x, y)
 
     def setup_controls(self):
         self.addButton.clicked.connect(self.add)
@@ -32,6 +43,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.settingsButton.clicked.connect(self.settings)
         self.settingsButton.setIcon(QtGui.QIcon(resource_path('files/settings.png')))
         self.settingsButton.setIconSize(QtCore.QSize(24, 24))
+        self.searchEdit.textChanged.connect(self.load_data)
+        self.ontop_button.clicked.connect(self.stay_on_top)
+        self.ontop_button.setIcon(QtGui.QIcon(resource_path('files/keep.png')))
+        self.ontop_button.setIconSize(QtCore.QSize(24, 24))
+        self.closeButton.clicked.connect(sys.exit)
 
     def settings(self):
         dialog = SettingsDialog()
@@ -75,7 +91,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 widget.deleteLater()
             else:
                 self.passBox.removeItem(item)
-        data = sql.get_all_data()
+        data = sql.get_all_data(self.searchEdit.text())
         self.services = []
         for el in data:
             self.services.append(
@@ -84,6 +100,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for service in self.services:
             if service.category == self.category:
                 self.passBox.addWidget(ElementWidget(service))
+
+    def stay_on_top(self):
+        self.on_top = not self.on_top
+        self.setWindowFlag(QtCore.Qt.WindowType.WindowStaysOnTopHint, self.on_top)
+
+        self.ontop_button.setIcon(QtGui.QIcon(
+            resource_path('files/keep_off.png') if self.on_top
+            else resource_path('files/keep.png')
+        ))
+        self.show()
+        self.raise_()
 
 
 if __name__ == '__main__':

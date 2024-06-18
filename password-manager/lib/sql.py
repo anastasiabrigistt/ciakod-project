@@ -74,12 +74,14 @@ def delete_data(id):
     db.close()
 
 
-def get_all_data():
+def get_all_data(search=''):
     load_dotenv()
     db = __connect_to_db()
     cursor = db.cursor()
 
-    cursor.execute("SELECT * FROM services")
+    cursor.execute(f"SELECT * FROM services "
+                   f"WHERE service LIKE '{search}%' "
+                   f"OR login LIKE '{search}%'")
 
     rows = list(cursor.fetchall())
 
@@ -121,9 +123,3 @@ def truncate():
     cursor.close()
     db.close()
 
-
-if __name__ == '__main__':
-    create_db()
-    insert_data('web', 'test', 'test', 'test')
-    insert_data('apps', 'test1', 'test1', 'test1')
-    insert_data('web', 'test2', 'test2', 'test2')
