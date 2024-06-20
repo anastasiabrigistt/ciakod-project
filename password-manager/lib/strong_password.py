@@ -79,4 +79,3 @@ def generate_password(length=12):
     return ''.join(password)
 
 
-

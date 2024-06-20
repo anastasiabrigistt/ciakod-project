@@ -1,6 +1,7 @@
 import sys
 
 from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtGui import QPalette, QIcon
 
 from lib.resource import resource_path
 import lib.sql as sql
@@ -34,24 +35,35 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.move(x, y)
 
     def setup_controls(self):
+        if self.get_app_theme() == 'Dark':
+            self.addButton.setIcon(QtGui.QIcon(resource_path('files/Dark/add.png')))
+            self.settingsButton.setIcon(QtGui.QIcon(resource_path('files/Dark/settings.png')))
+            self.ontop_button.setIcon(QtGui.QIcon(resource_path('files/Dark/keep.png')))
+        else:
+            self.addButton.setIcon(QtGui.QIcon(resource_path('files/Light/add.png')))
+            self.settingsButton.setIcon(QtGui.QIcon(resource_path('files/Light/settings.png')))
+            self.ontop_button.setIcon(QtGui.QIcon(resource_path('files/Light/keep.png')))
         self.addButton.clicked.connect(self.add)
-        self.addButton.setIcon(QtGui.QIcon(resource_path('files/add.png')))
+
         self.addButton.setIconSize(QtCore.QSize(24, 24))
         self.webButton.clicked.connect(lambda _: self.filter('web'))
         self.appsButton.clicked.connect(lambda _: self.filter('apps'))
         self.otherButton.clicked.connect(lambda _: self.filter('other'))
         self.settingsButton.clicked.connect(self.settings)
-        self.settingsButton.setIcon(QtGui.QIcon(resource_path('files/settings.png')))
+
         self.settingsButton.setIconSize(QtCore.QSize(24, 24))
         self.searchEdit.textChanged.connect(self.load_data)
         self.ontop_button.clicked.connect(self.stay_on_top)
-        self.ontop_button.setIcon(QtGui.QIcon(resource_path('files/keep.png')))
+
         self.ontop_button.setIconSize(QtCore.QSize(24, 24))
         self.closeButton.clicked.connect(sys.exit)
 
     def settings(self):
         dialog = SettingsDialog()
-        dialog.setWindowIcon(QtGui.QIcon(resource_path('files/icon.ico')))
+        if dialog.get_app_theme() == 'Dark':
+            dialog.setWindowIcon(QtGui.QIcon(resource_path('files/Light/icon.ico')))
+        else:
+            dialog.setWindowIcon(QtGui.QIcon(resource_path('files/Dark/icon.ico')))
         dialog.exec()
         self.load_data()
 
@@ -59,7 +71,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         service = Service()
         service.category = self.category
         dialog = PasswordDialog(service)
-        dialog.setWindowIcon(QtGui.QIcon(resource_path('files/icon.ico')))
+        if dialog.get_app_theme() == 'Dark':
+            dialog.setWindowIcon(QtGui.QIcon(resource_path('files/Light/icon.ico')))
+        else:
+            dialog.setWindowIcon(QtGui.QIcon(resource_path('files/Dark/icon.ico')))
+
         dialog.exec()
         self.load_data()
 
@@ -72,7 +88,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def master_password(self):
         master = MasterDialog()
-        master.setWindowIcon(QtGui.QIcon(resource_path('files/icon.ico')))
+        if master.get_app_theme() == 'Dark':
+            master.setWindowIcon(QtGui.QIcon(resource_path('files/Light/icon.ico')))
+        else:
+            master.setWindowIcon(QtGui.QIcon(resource_path('files/Dark/icon.ico')))
         status = master.exec()
         while status != QtWidgets.QDialog.DialogCode.Accepted:
             if not master.tried:
@@ -104,18 +123,35 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def stay_on_top(self):
         self.on_top = not self.on_top
         self.setWindowFlag(QtCore.Qt.WindowType.WindowStaysOnTopHint, self.on_top)
+        if self.get_app_theme() == 'Dark':
+            self.ontop_button.setIcon(QtGui.QIcon(
+                resource_path('files/Dark/keep_off.png') if self.on_top
+                else resource_path('files/Dark/keep.png')
+            ))
+        else:
+            self.ontop_button.setIcon(QtGui.QIcon(
+                resource_path('files/Light/keep_off.png') if self.on_top
+                else resource_path('files/Light/keep.png')
+            ))
 
-        self.ontop_button.setIcon(QtGui.QIcon(
-            resource_path('files/keep_off.png') if self.on_top
-            else resource_path('files/keep.png')
-        ))
         self.show()
         self.raise_()
+
+    def get_app_theme(self):
+        palette = self.palette()
+        window_color = palette.color(QPalette.ColorRole.Window)
+        if str(window_color) == 'PySide6.QtGui.QColor.fromRgbF(0.117647, 0.117647, 0.117647, 1.000000)':
+            return 'Dark'
+        else:
+            return 'Light'
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowIcon(QtGui.QIcon(resource_path('files/icon.ico')))
+    if window.get_app_theme() == 'Dark':
+        window.setWindowIcon(QtGui.QIcon(resource_path('files/Light/icon.ico')))
+    else:
+        window.setWindowIcon(QtGui.QIcon(resource_path('files/Dark/icon.ico')))
     window.show()
     sys.exit(app.exec())

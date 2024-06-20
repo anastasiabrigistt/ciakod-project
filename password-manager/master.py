@@ -1,11 +1,13 @@
 import hashlib
 import os
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
+from PySide6.QtGui import QPalette
 from dotenv import load_dotenv
 
 import lib.crypto as crypto
 from lib import sql
+from lib.resource import resource_path
 from ui.master_form import Ui_Dialog
 
 env = load_dotenv()
@@ -21,6 +23,10 @@ class MasterDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pushButton.clicked.connect(self.login)
 
     def setup_form(self):
+        if self.get_app_theme() == 'Dark':
+            self.setWindowIcon(QtGui.QIcon(resource_path('files/Light/icon.ico')))
+        else:
+            self.setWindowIcon(QtGui.QIcon(resource_path('files/Dark/icon.ico')))
         if not self.new:
             self.newLabel.setVisible(False)
             self.newEdit.setVisible(False)
@@ -31,6 +37,14 @@ class MasterDialog(QtWidgets.QDialog, Ui_Dialog):
                 '<p style="font-size: 14px;">'
                 'Придумайте мастер пароль для входа в приложение:</p>'
             )
+
+    def get_app_theme(self):
+        palette = self.palette()
+        window_color = palette.color(QPalette.ColorRole.Window)
+        if str(window_color) == 'PySide6.QtGui.QColor.fromRgbF(0.117647, 0.117647, 0.117647, 1.000000)':
+            return 'Dark'
+        else:
+            return 'Light'
 
     def login(self):
         if not self.new:

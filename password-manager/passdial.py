@@ -1,4 +1,5 @@
 from PySide6 import QtWidgets
+from PySide6.QtGui import QPalette
 
 import lib.strong_password as strong_password
 import lib.sql as sql
@@ -22,6 +23,14 @@ class PasswordDialog(QtWidgets.QDialog, Ui_PasswordDialog):
 
     def generate(self):
         self.passEdit.setText(strong_password.generate_password())
+
+    def get_app_theme(self):
+        palette = self.palette()
+        window_color = palette.color(QPalette.ColorRole.Window)
+        if str(window_color) == 'PySide6.QtGui.QColor.fromRgbF(0.117647, 0.117647, 0.117647, 1.000000)':
+            return 'Dark'
+        else:
+            return 'Light'
 
     def check(self):
         level, comments = strong_password.check_password_strength(
